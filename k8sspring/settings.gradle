@@ -1,0 +1,5 @@
+rootProject.name = 'k8sspring'
+
+include 'module-api'
+include 'module-common'
+include 'module-admin'
