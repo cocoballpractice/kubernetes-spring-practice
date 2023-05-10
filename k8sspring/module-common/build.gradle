@@ -1,0 +1,50 @@
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '2.7.11'
+    id 'io.spring.dependency-management' version '1.0.15.RELEASE'
+    id 'java-library' // api 키워드 사용을 위한 세팅
+}
+
+group = 'dev.be'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '11'
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter'
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+    // database
+    runtimeOnly 'com.h2database:h2'
+    runtimeOnly 'com.mysql:mysql-connector-j'
+    runtimeOnly 'org.postgresql:postgresql'
+    runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'
+
+    // jpa, security
+    api 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}
+
+tasks.bootJar { enabled=false }
+// 공통 모듈 의존성 추가 시 반드시 넣을 것
+// 기본값은 true, xxx.jar 파일이 생성되게 됨 -> 파일 안에 어플리케이션 안에 필요한 리소스 (클래스, 의존성 등) 가 전부 들어가게 됨
+// common 모듈의 경우 직접 실행을 시킬 것이 아니기 때문에 jar 파일 생성이 필요없어짐
+// 해당 옵션을 true로 설정하고 빌드하게 되면 jar 파일 생성을 위해 main 클래스를 찾게 되는데 해당 모듈은 main 클래스가 없으므로 에러가 발생
+
+tasks.jar { enabled=true }
+// xxx-plain.jar 파일로 생성. 이 경우 클래스와 리소스만 포함하며 의존성은 포함되지 않음. 서버에서 구동이 되지 않게 됨
